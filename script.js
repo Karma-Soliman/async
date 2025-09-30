@@ -13,8 +13,8 @@ const loadData = async () => {
         const data = await fetchData(localurl)
         if (data) {
             spinner.classList.add("d-none")
-            users = data.data // set the users variable
-			displayUsers(users) // pass users to displayUsers
+            const users = data.data  
+			displayUsers(users) 
             console.log("Data loaded successfully:", data)
         }
     } catch (error) {
@@ -27,7 +27,7 @@ const loadData = async () => {
 }
 const displayUsers = (localUsers) => {
     console.log("running the display function !", localUsers)
-    if (!users || users.length === 0) {
+    if (!localUsers || localUsers.length === 0) {
         alert.classList.remove("d-none")
         alert.classList.add("alert-danger")
         alert.innerHTML = "no user found"
@@ -59,4 +59,3 @@ const displayUsers = (localUsers) => {
 }
 
 loadData();  
-
