@@ -1,5 +1,4 @@
-import {fetchData} from "./fetchData.js"
-
+import { fetchData } from "./fetchData.js"
 const remoteurl= "http://easy-simple-users-rest-api.onrender.com"
 const localurl = "response.json"
 
@@ -37,7 +36,7 @@ const displayUsers = (localUsers) => {
 		const usersContainer = document.getElementById("users-container")
 		usersContainer.innerHTML += `
 		<article class="card">
-				<div class="card-image">
+<div class="card-image">
 					<img src="${user.avatar_url}" alt="${user.name}" class="card-img-top" />
 					<span class="card-title">${user.name}</span>
 				</div>
@@ -50,12 +49,34 @@ const displayUsers = (localUsers) => {
 							<strong>Role:</strong> ${user.role}
 						</li>
 					</ul>
+					<button data-bs-target="#exampleModal" data-bs-toggle="modal" class="btn btn-secondary m-2">Edit</button>
 				</div>
 			</article>
 `
 	})
-    
-
 }
 
-loadData();  
+window.openEdit = (id) => {
+	const user = localUsers.find(user => user.id === id);
+	if (user) {
+		document.getElementById("userName").value = user.name;
+		document.getElementById("userAge").value = user.age;
+		document.getElementById("userRole").value = user.role;
+	}
+}
+
+window.saving = () => {
+	const updatedName = document.getElementById("userName").value;
+	const updatedAge = document.getElementById("userAge").value;
+	const updatedRole = document.getElementById("userRole").value;
+
+	const user = users.find(user => user.id === id);
+	if (user) {
+		user.name = updatedName;
+		user.age = updatedAge;
+		user.role = updatedRole;
+		displayUsers(users);
+	}
+}
+
+loadData();  				
