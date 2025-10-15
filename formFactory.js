@@ -22,16 +22,20 @@ export const formFactory = () => {
   const nameinput = inputFactory("text", "userName", "nameHelp")
 
   const agelabel = labelFactory("userAge", "User's Age")
-  const ageinput = inputFactory("number", "userAge", "nameHelp")
+  const ageinput = inputFactory("number", "userAge", "ageHelp")
 
   const genderlabel = labelFactory("userGender", "User's Gender")
-  const genderinput = inputFactory("text", "userGender", "nameHelp")
+  const genderinput = inputFactory("text", "userGender", "genderHelp")
+
+  const imagelabel = labelFactory("userImage", "User's Image")
+  const imageinput = inputFactory("image", "userImage", "imageHelp")
 
     const appendNodeElements = (parentNode, ...childNodes) => {
         childNodes.forEach(child => parentNode.appendChild(child));
     }
 
-    appendNodeElements(form, namelabel, nameinput, agelabel, ageinput, genderlabel, genderinput);
+  appendNodeElements(form, namelabel, nameinput, agelabel, ageinput, genderlabel, genderinput, imagelabel, imageinput);
 
   document.querySelector(".modal-body").appendChild(form)
+  return form
 }

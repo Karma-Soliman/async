@@ -6,6 +6,7 @@ const localurl = "response.json"
 const alert = document.querySelector(".alert")
 const spinner = document.querySelector(".spinner-border")
 
+
 const loadData = async () => {
   spinner.classList.remove("d-none")
   try {
@@ -15,7 +16,7 @@ const loadData = async () => {
       spinner.classList.add("d-none")
       const users = data.data
       displayUsers(users)
-      addEventListeners()
+      addEventListeners(users)
       console.log("Data loaded successfully:", data)
     }
   } catch (error) {
@@ -51,21 +52,30 @@ const displayUsers = (localUsers) => {
 							<strong>Gender:</strong> ${user.gender}
 						</li>
 					</ul>
-					<button data-bs-target="#exampleModal" data-bs-toggle="modal" class="edit-btn btn btn-secondary m-2">Edit</button>
+					<button data-user-id="${user.id}" data-bs-target="#exampleModal" data-bs-toggle="modal" class="edit-btn btn btn-secondary m-2">Edit</button>
 				</div>
-			</article>
-`
+			</article>`
   })
 }
 
-const addEventListeners = (e) => {
+const addEventListeners = (e, users) => {
   const editButton = document.querySelectorAll(".edit-btn")
   editButton.forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (e) => {
       document.querySelector(".modal-body").innerHTML = ""
       document.querySelector(".modal-body").appendChild(formFactory())
+      const foundUsers = users.find(
+        (user) => user.id === parseInt(e.target.getAttribute("data-user-id"))
+      )
+      console.log(foundUsers)
+      getModalForm()
     })
+   
   })
+}
+const getModalForm = () => {
+  const modalForm = document.querySelector(".modal-body").querySelector("form")
+  console.log(modalForm)
 }
 
 loadData()
