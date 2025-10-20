@@ -28,7 +28,7 @@ export const formFactory = () => {
   const genderinput = inputFactory("text", "userGender", "genderHelp")
 
   const imagelabel = labelFactory("userImage", "User's Image")
-  const imageinput = inputFactory("image", "userImage", "imageHelp")
+  const imageinput = inputFactory("url", "userImage", "imageHelp")
 
     const appendNodeElements = (parentNode, ...childNodes) => {
         childNodes.forEach(child => parentNode.appendChild(child));

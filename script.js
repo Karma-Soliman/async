@@ -1,11 +1,11 @@
 import { fetchData } from "./fetchData.js"
 import { formFactory } from "./formFactory.js"
+import { putData } from "./putData.js"
 const remoteurl = "http://easy-simple-users-rest-api.onrender.com"
 const localurl = "response.json"
 
 const alert = document.querySelector(".alert")
 const spinner = document.querySelector(".spinner-border")
-
 
 const loadData = async () => {
   spinner.classList.remove("d-none")
@@ -48,9 +48,7 @@ const displayUsers = (localUsers) => {
 					<ul class="list-group">
 						<li class="list-group-item"><strong>Name:</strong>${user.name}</li>
 						<li class="list-group-item"><strong>Age:</strong>${user.age}</li>
-						<li class="list-group-item">
-							<strong>Gender:</strong> ${user.gender}
-						</li>
+						<li class="list-group-item"><strong>Gender:</strong> ${user.gender}</li>
 					</ul>
 					<button data-user-id="${user.id}" data-bs-target="#exampleModal" data-bs-toggle="modal" class="edit-btn btn btn-secondary m-2">Edit</button>
 				</div>
@@ -58,8 +56,9 @@ const displayUsers = (localUsers) => {
   })
 }
 
-const addEventListeners = (e, users) => {
+const addEventListeners = (users) => {
   const editButton = document.querySelectorAll(".edit-btn")
+  
   editButton.forEach((button) => {
     button.addEventListener("click", (e) => {
       document.querySelector(".modal-body").innerHTML = ""
@@ -67,15 +66,30 @@ const addEventListeners = (e, users) => {
       const foundUsers = users.find(
         (user) => user.id === parseInt(e.target.getAttribute("data-user-id"))
       )
-      console.log(foundUsers)
-      getModalForm()
+      getModalForm(foundUsers)
     })
-   
   })
 }
-const getModalForm = () => {
+const getModalForm = (foundUsers) => {
   const modalForm = document.querySelector(".modal-body").querySelector("form")
-  console.log(modalForm)
+
+  modalForm.userName.value = foundUsers.name
+  modalForm.userAge.value = foundUsers.age
+  modalForm.userGender.value = foundUsers.gender
+  modalForm.userImage.value = foundUsers.avatar_url
 }
+
+const submitBut = document.querySelector(".submit-btn")
+submitBut.addEventListener("click", (e) => {
+  const dataToSend = {
+    name: document.querySelector("#userName").value,
+    age: document.querySelector("#userAge").value,
+    gender: document.querySelector("#userGender").value,
+    avatar_url: document.querySelector("#userImage").value,
+  }
+  putData(remoteurl, dataToSend)
+  
+})
+
 
 loadData()
