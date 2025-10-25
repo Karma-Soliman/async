@@ -1,12 +1,12 @@
 import { fetchData } from "./fetchData.js"
 import { formFactory } from "./formFactory.js"
 import { putData } from "./putData.js"
-const remoteurl = "http://easy-simple-users-rest-api.onrender.com"
+const remoteurl = "https://easy-simple-users-rest-api.onrender.com/api/users"
 const localurl = "response.json"
 
 const alert = document.querySelector(".alert")
 const spinner = document.querySelector(".spinner-border")
-
+let users
 const loadData = async () => {
   spinner.classList.remove("d-none")
   try {
@@ -14,7 +14,7 @@ const loadData = async () => {
     const data = await fetchData(localurl)
     if (data) {
       spinner.classList.add("d-none")
-      const users = data.data
+      users = data.data
       displayUsers(users)
       addEventListeners(users)
       console.log("Data loaded successfully:", data)
@@ -58,7 +58,7 @@ const displayUsers = (localUsers) => {
 
 const addEventListeners = (users) => {
   const editButton = document.querySelectorAll(".edit-btn")
-  
+
   editButton.forEach((button) => {
     button.addEventListener("click", (e) => {
       document.querySelector(".modal-body").innerHTML = ""
@@ -77,19 +77,75 @@ const getModalForm = (foundUsers) => {
   modalForm.userAge.value = foundUsers.age
   modalForm.userGender.value = foundUsers.gender
   modalForm.userImage.value = foundUsers.avatar_url
+  submitBut.setAttribute("data-user-id", foundUsers.id)
 }
 
 const submitBut = document.querySelector(".submit-btn")
-submitBut.addEventListener("click", (e) => {
+submitBut.addEventListener("click", async () => {
   const dataToSend = {
     name: document.querySelector("#userName").value,
     age: document.querySelector("#userAge").value,
     gender: document.querySelector("#userGender").value,
     avatar_url: document.querySelector("#userImage").value,
+    id: document.querySelector(".submit-btn").getAttribute("data-user-id"),
   }
-  putData(remoteurl, dataToSend)
-  
+  try {
+    const response = await putData(remoteurl, dataToSend)
+    if (response) {
+      document.querySelector(".modal-body").innerHTML = `
+        <div class="d-flex justify-content-center align-items-center" style="height: 312px;">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>`
+      
+      console.log(response)
+      updateCard(dataToSend)
+      const Mymodal = document.getElementById("exampleModal")
+      const modal = bootstrap.Modal.getInstance(Mymodal)
+      setTimeout(() => {
+        modal.hide()
+        addEventListeners(users)
+      }, 700)
+    }
+  } catch (error) {
+    console.log(error)
+    document.querySelector(".modal-body").innerHTML = `
+		<div class="d-flex flex-column justify-content-center align-items-center" style="height: 312px;">
+			<div class="alert alert-danger w-100" role="alert">
+				${error.message}
+			</div>
+			<p class="mark">${error.stack}</p>
+		</div>
+		`
+  }
 })
+const updateCard = (users) => {
+  const cardsArray = Array.from(document.querySelectorAll(".card"))
+  const foundCard = cardsArray.find((card) => {
+    return (
+      parseInt(card.querySelector("button").getAttribute("data-user-id")) ===
+      parseInt(users.id)
+    )
+  })
+	foundCard.innerHTML = `
+				<div class="card-image p-3">
+					<img src="${users.avatar_url}" alt="${users.name}" height="254px" class="card-img-top object-fit-cover" />
+					<span class="card-title">${users.name}</span>
+				</div>
 
+				<div class="card-content">
+					<ul class="list-group">
+						<li class="list-group-item"><strong>Name: </strong>${users.name}</li>
+						<li class="list-group-item"><strong>Age: </strong>${users.age}</li>
+						<li class="list-group-item">
+							<strong>Gender: </strong> ${users.gender}
+						</li>
+					</ul>
+					<button data-user-id="${users.id}" data-bs-target="#exampleModal" data-bs-toggle="modal" class="edit-btn btn btn-secondary m-2">Edit</button>
+				</div>
+
+`
+}
 
 loadData()
