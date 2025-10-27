@@ -11,7 +11,7 @@ const loadData = async () => {
   spinner.classList.remove("d-none")
   try {
     console.log("Fetching data...")
-    const data = await fetchData(localurl)
+    const data = await fetchData(remoteurl)
     if (data) {
       spinner.classList.add("d-none")
       users = data.data
